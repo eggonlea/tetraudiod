@@ -1,0 +1,70 @@
+TetraProc-0.8.2   Install instructions
+--------------------------------------
+
+To install you will need libclthreads and libclxclient
+from <http://kokkinizita.linuxaudio.org>.
+If you don't have them yet, download, then for each
+unpack, make, sudo make install, make clean. Install
+libclthreads first as the other one depends on it.
+
+You will also need libfftw3, libsndfile, and their
+corresponding header files. They are pre-installed
+by most Linux distros but you may have to get the
+devel packages for them.
+
+Finally cd to the source dir, make, sudo make install,
+make clean.
+
+Copy the things in the HOME subdir to your home directory
+and edit two lines near the start of .tetraprocrc - just
+replace <your_login> by whatever needed.
+
+Once this is done tetraproc should automatically load the
+config file for your microphone when started, and be ready
+for use.
+
+
+Tetraproc and Tetrafile use
+---------------------------
+
+There is currently no real manual for TetraProc and Tetrafile.
+The block diagram (see .pdf) will explain most essential points.
+
+Tetraproc consists of two parts: the A/B convertor and the
+metering and monitoring. Tetrafile only has the A/B conversion
+part which is otherwise identical.
+
+The elements shown in red in the PDF are those that depend on
+the microphone and are modified by the configuration file. 
+
+Both Tetraproc and Tetrafile will normally use the Furse-Malham
+form of B-format in which the W signal is attenuated by 3dB w.r.t.
+the first order ones. Both can also use the 'normalised' and 'semi-
+normalised' forms if required. For safety, this can be changed on
+the command line only, and Tetraproc will show the current setting
+in its metering window. Note that the coefficients shown in the 
+config window are independent of this - they are _always_ in the
+semi-normalised form (i.e. they do not include the 3dB attenuation
+on W for Furse-Malham, nor the 4.8dB gain on XYZ for the normalised
+one).
+
+When using tetrafile, make sure to include the high pass filter
+option with a reasonable cutoff frequency - without it some mics
+(in particular Core Sound's) are very sensitive to LF noise.
+
+The default output file type for Tetrafile is '.amb', which is
+a WAVEX file with a special GUID identifying it as Ambisonic.
+Not all tools can read this, use either .caf or .wav in those
+cases. Note that the file type is set using the command line
+options and does not depend on the filename extension. 
+
+If you have any problems or questions don't hesitate to get in
+contact.
+
+
+Enjoy !
+
+-- 
+FA
+
+

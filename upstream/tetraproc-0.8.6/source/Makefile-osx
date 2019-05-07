@@ -1,0 +1,66 @@
+# -----------------------------------------------------------------------------
+#
+#  Copyright (C) 2008-2018 Fons Adriaensen <fons@linuxaudio.org>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# -----------------------------------------------------------------------------
+
+
+PREFIX ?= /usr/local
+BINDIR ?= $(PREFIX)/bin
+SHARED ?= $(PREFIX)/share/tetraproc
+
+VERSION = 0.8.6
+CPPFLAGS +=  -MMD -MP -DVERSION=\"$(VERSION)\" -DSHARED=\"$(SHARED)\"
+CXXFLAGS += -O2 -Wall 
+CXXFLAGS += -march=native
+LDFLAGS += -pthread
+
+
+all:	tetraproc tetrafile
+
+
+TETRAPROC_O = tetraproc.o styles.o mainwin.o jclient.o filewin.o convol44.o virtmic.o \
+hpfilt.o pmfilt.o textmat.o confwin.o abconfig.o abprocess.o oscform.o impdata.o kmeter.o \
+kmeterdsp.o png2img.o
+tetraproc:	CPPFLAGS += $(shell pkgconf --cflags freetype2)
+tetraproc:	LDLIBS += -lsndfile -lfftw3f -lclxclient -lclthreads -ljack -lpng \
+		-framework Cocoa -lXft -lX11
+tetraproc:	$(TETRAPROC_O)
+	$(CXX) $(LDFLAGS) -o $@ $(TETRAPROC_O) $(LDLIBS)
+$(TETRAPROC_O):
+-include $(TETRAPROC_O:%.o=%.d)
+
+
+TETRAFILE_O = tetrafile.o convol44.o hpfilt.o pmfilt.o abconfig.o abprocess.o oscform.o \
+impdata.o audiofile.o dither.o
+tetrafile:	LDLIBS += -lsndfile -lfftw3f -lrt 
+tetrafile:	$(TETRAFILE_O)
+	$(CXX) $(LDFLAGS) -o $@ $(TETRAFILE_O) $(LDLIBS)
+$(TETRAFILE_O):
+-include $(TETRAFILE_O:%.o=%.d)
+
+
+install:	all
+	install -d $(DESTDIR)$(BINDIR
+	install -d $(DESTDIR)$(SHARED)
+	install -m 755 tetraproc $(DESTDIR)$(BINDIR)
+	install -m 755 tetrafile $(DESTDIR)$(BINDIR)
+	install -m 644 ../share/* $(SHARED)
+
+
+clean:
+	/bin/rm -f *~ *.o *.a *.d *.so
+	/bin/rm -f tetraproc
