@@ -1,0 +1,12 @@
+LOCAL_PATH := $(call my-dir)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := libfftw3f
+LOCAL_SRC_FILES:= libfftw3f.a
+LOCAL_C_INCLUDES:= $(LOCAL_PATH)/../include
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../include
+LOCAL_EXPORT_C_INCLUDES_DIRS := $(LOCAL_PATH)/../include
+LOCAL_EXPORT_LDLIBS := -lfftw3f
+
+include $(BUILD_SHARED_LIBRARY)
